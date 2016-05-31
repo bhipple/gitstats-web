@@ -1,25 +1,22 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators   #-}
-module GitStats
-    ( startApp
-    ) where
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators     #-}
+
+module GitStats ( startApp ) where
 
 import Data.Aeson
 import Data.Aeson.TH
 import Network.Wai
 import Network.Wai.Handler.Warp
+import Servant.HTML.Blaze
+import Text.Blaze.Html5 hiding (main)
 import Servant
 
-data User = User
-  { userId        :: Int
-  , userFirstName :: String
-  , userLastName  :: String
-  } deriving (Eq, Show)
+data Page = Page
+instance ToMarkup Page where
+    toMarkup Page = h1 "hello world"
 
-$(deriveJSON defaultOptions ''User)
-
-type API = "users" :> Get '[JSON] [User]
+type API = Get '[HTML] Page
 
 startApp :: IO ()
 startApp = run 8080 app
@@ -31,9 +28,4 @@ api :: Proxy API
 api = Proxy
 
 server :: Server API
-server = return users
-
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
+server = return Page

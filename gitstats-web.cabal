@@ -18,6 +18,8 @@ library
   exposed-modules:     GitStats
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , blaze-html
+                     , servant-blaze
                      , servant-server
                      , wai
                      , warp
